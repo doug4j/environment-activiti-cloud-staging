@@ -56,104 +56,42 @@ global:
   keycloak:
     url: "http://activiti-keycloak.jx-staging.doug4j.com/auth"
   gateway:
-    host: &gatewayhost "activiti-cloud-gateway.doug4j.com"
+    host: &gatewayhost "activiti-cloud-gateway.jx-staging.doug4j.com"    
 
 activiti-cloud-modeling:
-  enabled: false
-
-application:
-  runtime-bundle:
+  enabled: true
+  ingress:
     enabled: true
+    hostName: *gatewayhost
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/enable-cors: true
+      nginx.ingress.kubernetes.io/cors-allow-headers: "*"
+      nginx.ingress.kubernetes.io/x-forwarded-prefix: true
+  frontend:
     image:
-      pullPolicy: Always
-    # extraEnv: |
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_NAME
-    #     value: "HR Group restricted to SimpleProcess and ConnectorProcess"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_GROUPS
-    #     value: "hr"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_ACCESS
-    #     value: "WRITE"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_SERVICENAME
-    #     value: "rb-my-app"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_KEYS
-    #     value: "SimpleProcess,ConnectorProcess,fixSystemFailure,twoTaskProcess"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_NAME
-    #     value: "testgroup not restricted at all"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_GROUPS
-    #     value: "testgroup"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_ACCESS
-    #     value: "WRITE"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_SERVICENAME
-    #     value: "rb-my-app"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_KEYS
-    #     value: "*"
-
-  activiti-cloud-query:
+      pullPolicy: IfNotPresent  
+  backend:
     image:
-      pullPolicy: Always
-    # extraEnv: |
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_NAME
-    #     value: "HR Group restricted to SimpleProcess and ConnectorProcess"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_GROUPS
-    #     value: "hr"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_ACCESS
-    #     value: "WRITE"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_SERVICENAME
-    #     value: "rb-my-app"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_KEYS
-    #     value: "SimpleProcess,ConnectorProcess,fixSystemFailure,twoTaskProcess"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_NAME
-    #     value: "testgroup not restricted at all"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_GROUPS
-    #     value: "testgroup"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_ACCESS
-    #     value: "WRITE"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_SERVICENAME
-    #     value: "rb-my-app"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_KEYS
-    #     value: "*"
-
-  activiti-cloud-connector:
-    enabled: true
-    image:
-      pullPolicy: Always
-
-  activiti-cloud-audit:
-    image:
-      pullPolicy: Always
-    # extraEnv: |
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_NAME
-    #     value: "HR Group restricted to SimpleProcess and ConnectorProcess"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_GROUPS
-    #     value: "hr"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_ACCESS
-    #     value: "WRITE"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_SERVICENAME
-    #     value: "rb-my-app"
-    #   - name: ACTIVITI_SECURITY_POLICIES_0_KEYS
-    #     value: "SimpleProcess,ConnectorProcess,fixSystemFailure,twoTaskProcess"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_NAME
-    #     value: "testgroup not restricted at all"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_GROUPS
-    #     value: "testgroup"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_ACCESS
-    #     value: "WRITE"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_SERVICENAME
-    #     value: "rb-my-app"
-    #   - name: ACTIVITI_SECURITY_POLICIES_1_KEYS
-    #     value: "*"
+      pullPolicy: IfNotPresent  
 
 infrastructure:
   activiti-keycloak:
     keycloak:
       enabled: true
       keycloak:
+        username: admin
+        password: admin
+        persistence:
+          deployPostgres: false
+          dbVendor: H2
         ingress:
           enabled: true
           path: /
           proxyBufferSize: "16k"
           hosts:
-            - "activiti-keycloak.doug4j.com"
+            - "activiti-keycloak.jx-staging.doug4j.com"
           annotations:
             kubernetes.io/ingress.class: nginx
             nginx.ingress.kubernetes.io/rewrite-target: /
@@ -168,14 +106,35 @@ infrastructure:
           /opt/jboss/keycloak/bin/add-user-keycloak.sh -r master -u admin -p admin
           cp /realm/activiti-realm.json .
           sed -i 's/placeholder.com/*/g' activiti-realm.json
-  
+          
   activiti-cloud-gateway:
     ingress:
       enabled: true
       hostName: *gatewayhost
       annotations:
         kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/rewrite-target: /
-        nginx.ingress.kubernetes.io/enable-cors: true
-        nginx.ingress.kubernetes.io/cors-allow-headers: "*"
-        nginx.ingress.kubernetes.io/x-forwarded-prefix: true
+
+application:
+  runtime-bundle:
+    enabled: true
+    db:
+      deployPostgres: true
+    image:
+      pullPolicy: IfNotPresent
+
+  activiti-cloud-query:
+    db:
+      deployPostgres: true
+    image:
+      pullPolicy: IfNotPresent
+
+  activiti-cloud-connector:
+    enabled: true
+    image:
+      pullPolicy: IfNotPresent
+
+  activiti-cloud-audit:
+    db:
+      deployPostgres: true
+    image:
+      pullPolicy: IfNotPresent
