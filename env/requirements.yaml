@@ -14,12 +14,6 @@ dependencies:
   name: exposecontroller
   repository: http://chartmuseum.jenkins-x.io
   version: 2.3.88
-- name: hello-activiti-cloud-connector1
-  repository: http://jenkins-x-chartmuseum:8080
-  version: 0.0.1
-- name: hello-activiti-runtime-bundle1
-  repository: http://jenkins-x-chartmuseum:8080
-  version: 0.0.2
 - name: infrastructure
   repository: https://activiti.github.io/activiti-cloud-charts/
   version: 0.6.0
