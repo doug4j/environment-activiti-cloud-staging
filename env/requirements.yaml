@@ -2,10 +2,10 @@ dependencies:
 - condition: activiti-cloud-modeling.enabled,modeling.enabled
   name: activiti-cloud-modeling
   repository: https://activiti.github.io/activiti-cloud-charts/
-  version: 0.6.0
+  version: 0.7.0
 - name: application
   repository: https://activiti.github.io/activiti-cloud-charts/
-  version: 0.6.0
+  version: 0.7.2
 - alias: expose
   name: exposecontroller
   repository: http://chartmuseum.jenkins-x.io
@@ -22,4 +22,4 @@ dependencies:
   version: 0.0.5
 - name: infrastructure
   repository: https://activiti.github.io/activiti-cloud-charts/
-  version: 0.6.0
+  version: 0.7.0
