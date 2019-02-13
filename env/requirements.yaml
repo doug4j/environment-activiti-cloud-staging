@@ -1,11 +1,26 @@
 dependencies:
+#Activiti 7 - Modeling
 - condition: activiti-cloud-modeling.enabled,modeling.enabled
   name: activiti-cloud-modeling
   repository: https://activiti.github.io/activiti-cloud-charts/
-  version: 0.7.0
+  version: 0.8.1
+#Activiti 7 - Application
 - name: application
   repository: https://activiti.github.io/activiti-cloud-charts/
-  version: 0.7.2
+  version: 0.8.2
+#Activiti 7 - Infrastructure
+- name: infrastructure
+  repository: https://activiti.github.io/activiti-cloud-charts/
+  version: 0.8.1
+# Activiti 7 - Cloud Connector
+- name: hello-activiti-cloud-connector1
+  repository: http://jenkins-x-chartmuseum:8080
+  version: 0.0.3
+# Activiti 7 - Process Runtime Bundle
+- name: hello-activiti-runtime-bundle1
+  repository: http://jenkins-x-chartmuseum:8080
+  version: 0.0.5
+# Common
 - alias: expose
   name: exposecontroller
   repository: http://chartmuseum.jenkins-x.io
@@ -14,12 +29,3 @@ dependencies:
   name: exposecontroller
   repository: http://chartmuseum.jenkins-x.io
   version: 2.3.88
-- name: hello-activiti-cloud-connector1
-  repository: http://jenkins-x-chartmuseum:8080
-  version: 0.0.3
-- name: hello-activiti-runtime-bundle1
-  repository: http://jenkins-x-chartmuseum:8080
-  version: 0.0.5
-- name: infrastructure
-  repository: https://activiti.github.io/activiti-cloud-charts/
-  version: 0.7.0
